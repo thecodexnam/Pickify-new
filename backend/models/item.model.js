@@ -5,6 +5,10 @@ const itemSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    description: {
+        type: String,
+        default: ""
+    },
     image: {
         type: String,
         required: true
@@ -13,18 +17,22 @@ const itemSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Shop"
     },
+    categoryRef: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
+        default: null
+    },
     category: {
         type: String,
-        enum: ["Snacks",
-            "Main Course",
-            "Desserts",
-            "Pizza",
-            "Burgers",
-            "Sandwiches",
-            "South Indian",
-            "North Indian",
-            "Chinese",
-            "Fast Food",
+        enum: ["Produce",
+            "Dairy & Eggs",
+            "Beverages",
+            "Snacks",
+            "Pantry",
+            "Meat & Seafood",
+            "Household",
+            "Personal Care",
+            "Bakery",
             "Others"
         ],
         required:true
@@ -34,9 +42,22 @@ const itemSchema = new mongoose.Schema({
         min:0,
         required:true
     },
+    stock: {
+        type: Number,
+        min: 0,
+        default: 0
+    },
+    unit: {
+        type: String,
+        default: "pieces"
+    },
+    featured: {
+        type: Boolean,
+        default: false
+    },
     foodType:{
         type:String,
-        enum:["veg","non veg"],
+        enum:["veg","non veg","n/a"],
         required:true
     },
    rating:{

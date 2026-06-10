@@ -19,6 +19,9 @@ export const getCurrentUser=async (req,res) => {
 export const updateUserLocation=async (req,res) => {
     try {
         const {lat,lon}=req.body
+        if(typeof lat !== "number" || typeof lon !== "number"){
+            return res.status(400).json({message:"valid lat and lon are required"})
+        }
         const user=await User.findByIdAndUpdate(req.userId,{
             location:{
                 type:'Point',

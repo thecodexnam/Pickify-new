@@ -2,35 +2,38 @@ import React, { useEffect } from 'react'
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FaUtensils } from "react-icons/fa";
+import { FaStore } from "react-icons/fa";
 import { useState } from 'react';
-import { useRef } from 'react';
 import axios from 'axios';
 import { serverUrl } from '../App';
 import { setMyShopData } from '../redux/ownerSlice';
 import { ClipLoader } from 'react-spinners';
+import AppFooter from '../components/AppFooter';
 function EditItem() {
     const navigate = useNavigate()
-    const { myShopData } = useSelector(state => state.owner)
+  const { categories: categoryRecords } = useSelector(state => state.user)
   const {itemId}=useParams()
    const [currentItem,setCurrentItem]=useState(null)
     const [name, setName] = useState("")
+    const [description, setDescription] = useState("")
     const [price, setPrice] = useState(0)
+    const [stock, setStock] = useState(0)
+    const [unit, setUnit] = useState("pieces")
+    const [featured, setFeatured] = useState(false)
     const [frontendImage, setFrontendImage] = useState("")
     const [backendImage, setBackendImage] = useState(null)
     const [category, setCategory] = useState("")
     const [foodType, setFoodType] = useState("")
    const [loading,setLoading]=useState(false)
-    const categories = ["Snacks",
-        "Main Course",
-        "Desserts",
-        "Pizza",
-        "Burgers",
-        "Sandwiches",
-        "South Indian",
-        "North Indian",
-        "Chinese",
-        "Fast Food",
+    const categories = categoryRecords?.length ? categoryRecords.map(category => category.name) : ["Produce",
+        "Dairy & Eggs",
+        "Beverages",
+        "Snacks",
+        "Pantry",
+        "Meat & Seafood",
+        "Household",
+        "Personal Care",
+        "Bakery",
         "Others"]
     const dispatch = useDispatch()
     const handleImage = (e) => {
@@ -45,9 +48,13 @@ function EditItem() {
         try {
             const formData = new FormData()
             formData.append("name",name)
+            formData.append("description",description)
             formData.append("category",category)
             formData.append("foodType", foodType)
             formData.append("price", price)
+            formData.append("stock", stock)
+            formData.append("unit", unit)
+            formData.append("featured", featured)
             if (backendImage) {
                 formData.append("image", backendImage)
             }
@@ -76,7 +83,11 @@ function EditItem() {
 
     useEffect(()=>{
      setName(currentItem?.name || "")
+     setDescription(currentItem?.description || "")
      setPrice(currentItem?.price || 0)
+     setStock(currentItem?.stock || 0)
+     setUnit(currentItem?.unit || "pieces")
+     setFeatured(currentItem?.featured || false)
      setCategory(currentItem?.category || "")
      setFoodType(currentItem?.foodType || "")
      setFrontendImage(currentItem?.image || "")
@@ -84,28 +95,32 @@ function EditItem() {
     return (
         <div className='flex justify-center flex-col items-center p-6 bg-gradient-to-br from-orange-50 relative to-white min-h-screen'>
             <div className='absolute top-[20px] left-[20px] z-[10] mb-[10px]' onClick={() => navigate("/")}>
-                <IoIosArrowRoundBack size={35} className='text-[#ff4d2d]' />
+                <IoIosArrowRoundBack size={35} className='text-[#00b252]' />
             </div>
 
-            <div className='max-w-lg w-full bg-white shadow-xl rounded-2xl p-8 border border-orange-100'>
+            <div className='mt-auto max-w-lg w-full bg-white shadow-xl rounded-2xl p-8 border border-orange-100'>
                 <div className='flex flex-col items-center mb-6'>
                     <div className='bg-orange-100 p-4 rounded-full mb-4'>
-                        <FaUtensils className='text-[#ff4d2d] w-16 h-16' />
+                        <FaStore className='text-[#00b252] w-16 h-16' />
                     </div>
                     <div className="text-3xl font-extrabold text-gray-900">
-                        Edit Food
+                        Edit Product
                     </div>
                 </div>
                 <form className='space-y-5' onSubmit={handleSubmit}>
                     <div>
                         <label className='block text-sm font-medium text-gray-700 mb-1'>Name</label>
-                        <input type="text" placeholder='Enter Item Name' className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500'
+                        <input type="text" placeholder='Enter Product Name' className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500'
                             onChange={(e) => setName(e.target.value)}
                             value={name}
                         />
                     </div>
                     <div>
-                        <label className='block text-sm font-medium text-gray-700 mb-1'>Food Image</label>
+                        <label className='block text-sm font-medium text-gray-700 mb-1'>Description</label>
+                        <textarea value={description} onChange={(e) => setDescription(e.target.value)} className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 min-h-24' />
+                    </div>
+                    <div>
+                        <label className='block text-sm font-medium text-gray-700 mb-1'>Product Image</label>
                         <input type="file" accept='image/*' className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500' onChange={handleImage} />
                         {frontendImage && <div className='mt-4'>
                             <img src={frontendImage} alt="" className='w-full h-48 object-cover rounded-lg border' />
@@ -118,6 +133,23 @@ function EditItem() {
                             onChange={(e) => setPrice(e.target.value)}
                             value={price}
                         />
+                    </div>
+                    <div className='grid grid-cols-3 gap-3'>
+                        <div>
+                            <label className='block text-sm font-medium text-gray-700 mb-1'>Stock</label>
+                            <input type="number" value={stock} onChange={(e) => setStock(e.target.value)} className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500' />
+                        </div>
+                        <div>
+                            <label className='block text-sm font-medium text-gray-700 mb-1'>Unit</label>
+                            <input type="text" value={unit} onChange={(e) => setUnit(e.target.value)} className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500' />
+                        </div>
+                        <div>
+                            <label className='block text-sm font-medium text-gray-700 mb-1'>Featured</label>
+                            <select value={featured ? "true" : "false"} onChange={(e) => setFeatured(e.target.value === "true")} className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500'>
+                                <option value="false">No</option>
+                                <option value="true">Yes</option>
+                            </select>
+                        </div>
                     </div>
                     <div>
                         <label className='block text-sm font-medium text-gray-700 mb-1'>Select Category</label>
@@ -134,7 +166,7 @@ function EditItem() {
                         </select>
                     </div>
                     <div>
-                        <label className='block text-sm font-medium text-gray-700 mb-1'>Select Food Type</label>
+                        <label className='block text-sm font-medium text-gray-700 mb-1'>Select Dietary Info</label>
                         <select className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500'
                             onChange={(e) => setFoodType(e.target.value)}
                             value={foodType}
@@ -149,15 +181,15 @@ function EditItem() {
                         </select>
                     </div>
 
-                    <button className='w-full bg-[#ff4d2d] text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:bg-orange-600 hover:shadow-lg transition-all duration-200 cursor-pointer' disabled={loading}>
+                    <button className='w-full bg-[#00b252] text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:bg-green-600 hover:shadow-lg transition-all duration-200 cursor-pointer' disabled={loading}>
                         {loading?<ClipLoader size={20} color='white'/>:"Save"}
                       
                     </button>
                 </form>
             </div>
-
-
-
+            <div className='mt-10 w-full max-w-5xl'>
+                <AppFooter />
+            </div>
         </div>
     )
 }

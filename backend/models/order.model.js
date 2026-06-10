@@ -56,10 +56,19 @@ const orderSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
+    invoiceNumber: {
+        type: String,
+        default: ""
+    },
     paymentMethod: {
         type: String,
         enum: ['cod', "online"],
         required: true
+    },
+    deliveryMethod: {
+        type: String,
+        enum: ['delivery', 'pickup'],
+        default: 'delivery'
     },
     deliveryAddress: {
         text: String,

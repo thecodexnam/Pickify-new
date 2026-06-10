@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { serverUrl } from '../App'
 import { useDispatch } from 'react-redux'
 import { setUserData } from '../redux/userSlice'
@@ -13,7 +13,9 @@ function useGetCurrentUser() {
             dispatch(setUserData(result.data))
   
     } catch (error) {
-        console.log(error)
+        if (error?.response?.status !== 401) {
+          console.log(error)
+        }
     }
 }
 fetchUser()
