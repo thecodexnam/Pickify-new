@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+
 const cartItemSchema = new mongoose.Schema({
     item: {
         type: mongoose.Schema.Types.ObjectId,
