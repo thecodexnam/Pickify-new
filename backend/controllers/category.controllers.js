@@ -1,5 +1,6 @@
 import Category from "../models/category.model.js";
 
+
 const defaultCategories = [
     "Produce",
     "Dairy & Eggs",
