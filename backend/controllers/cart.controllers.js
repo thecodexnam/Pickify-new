@@ -1,5 +1,6 @@
 import Cart from "../models/cart.model.js";
 
+
 const recalculateTotal = (items) =>
   items.reduce(
     (sum, item) => sum + Number(item.price) * Number(item.quantity),
