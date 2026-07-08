@@ -6,6 +6,7 @@ const uploadOnCloudinary = async (file) => {
         api_key: process.env.CLOUDINARY_API_KEY,
         api_secret: process.env.CLOUDINARY_API_SECRET
     });
+    
     try {
         const result = await cloudinary.uploader.upload(file)
         fs.unlinkSync(file)
