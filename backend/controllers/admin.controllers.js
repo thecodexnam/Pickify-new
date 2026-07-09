@@ -5,6 +5,7 @@ import Order from "../models/order.model.js";
 import Shop from "../models/shop.model.js";
 import User from "../models/user.model.js";
 
+
 export const getAdminDashboard = async (_req, res) => {
   try {
     const [users, shops, items, categories, orders] = await Promise.all([
