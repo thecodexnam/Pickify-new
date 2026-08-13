@@ -63,11 +63,11 @@ function MyOrders() {
           </div>
         ) : (
           <div className="space-y-5">
-            {myOrders.map((order, index) => (
+            {myOrders.map((order) => (
               userData.role === "user" ? (
-                <UserOrderCard data={order} key={index} />
+                <UserOrderCard data={order} key={order._id} />
               ) : userData.role === "owner" ? (
-                <OwnerOrderCard data={order} key={index} />
+                <OwnerOrderCard data={order} key={order._id} />
               ) : null
             ))}
           </div>
