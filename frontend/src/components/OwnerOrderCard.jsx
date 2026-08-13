@@ -100,8 +100,8 @@ function OwnerOrderCard({ data }) {
 
         <select
           className="rounded-xl border border-gray-200 focus:border-green-500 px-3 py-1.5 text-[10px] font-black outline-none text-[#00b252] bg-white cursor-pointer"
+          value={data.shopOrders?.status || ""}
           onChange={(e) => handleUpdateStatus(data._id, data.shopOrders?.shop?._id || data.shopOrders?.shop, e.target.value)}
-          defaultValue=""
         >
           <option value="" disabled>Change Status</option>
           <option value="pending">Pending</option>
